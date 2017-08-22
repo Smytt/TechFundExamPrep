@@ -12,14 +12,18 @@ namespace IMDB.Controllers
         [Route("")]
         public ActionResult Index()
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                var films = db.Films.ToList();
+                return View(films);
+            }
         }
 
         [HttpGet]
         [Route("create")]
         public ActionResult Create()
         {
-            //TODO: Implement me ...
+            return View();
         }
 
         [HttpPost]
@@ -27,14 +31,23 @@ namespace IMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Film film)
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                db.Films.Add(film);
+                db.SaveChanges();
+                return Redirect("/");
+            }
         }
 
         [HttpGet]
         [Route("edit/{id}")]
         public ActionResult Edit(int? id)
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                var film = db.Films.First(t => t.Id == id);
+                return View(film);
+            }
         }
 
         [HttpPost]
@@ -42,14 +55,27 @@ namespace IMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditConfirm(int? id, Film filmModel)
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                var film = db.Films.First(t => t.Id == id);
+                film.Name = filmModel.Name;
+                film.Genre = filmModel.Genre;
+                film.Director = filmModel.Director;
+                film.Year = filmModel.Year;
+                db.SaveChanges();
+                return Redirect("/");
+            }
         }
 
         [HttpGet]
         [Route("delete/{id}")]
         public ActionResult Delete(int? id)
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                var film = db.Films.First(t => t.Id == id);
+                return View(film);
+            }
         }
 
         [HttpPost]
@@ -57,7 +83,13 @@ namespace IMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirm(int? id, Film filmModel)
         {
-            //TODO: Implement me ...
+            using (var db = new IMDBDbContext())
+            {
+                var film = db.Films.First(t => t.Id == id);
+                db.Films.Remove(film);
+                db.SaveChanges();
+                return Redirect("/");
+            }
         }
     }
 }
